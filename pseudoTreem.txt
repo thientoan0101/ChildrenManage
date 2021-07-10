@@ -1,0 +1,97 @@
+1/ Tre em: Autorun
+
+counStart: input password
+
+   + if pass phu huynh: 60p check 1 lan
+   + else:
+       - kiem tra thoi diem co duoc dung ko?
+	   + Neu chua:
+		- thong bao khi nao moi duoc dung, check 15s and shutdown
+		- Neu kip nhap pass phu huynh, ko tat may
+
+	   + Else, Neu trong khoang thoi gian duoc dung
+		- Neu ko phai pass tre em: 
+			+ hoi lai 3 lan
+			+ dat thoi gian ko duoc dung la 10 phut
+			+ tat may
+
+		- Else, neu dung pass:
+			a) doc thong tin khung gio
+			b) thong bao con bao nhieu phut. And:
+				1) Moi phut luu man hinh 1 lan
+				2) thực hiện:
+					a. Nếu có thay doi thi cap nhat thoi diem tat may
+					b. Neu con 0 phut thi tat may
+
+class::getData()-----------> toàn
+
+-- doc, xuat file:
+	class:
+		vector
+		method: 
+
+	getData
+
+
+
+TREEM:
+	hàm cập nhật dữ liệu(getTime, file Data ba mẹ)----------?toàn
+-- nhap trong 15 sos
+
+
+
+
+
+-- xuất thông báo window:-----------------> đông
+	(
+
+
+
+
+
+-- thong tin trong file: kieu du lieu
+	
+
+-- lay thoi gian:-------------------> đông
+	getTIme
+
+-- lay hình anh:----------->đông
+
+
+
+-- file phụ: bao nhiêu file
+	+ Time còn lại: + remainingTImeDuration 
+			+ remainingTimeSum
+			+ nextTime
+			
+	
+	+ TIme bắt đầu: 
+		thời gian của restart
+		
+	+ file mat khau:
+		
+
+-----------------------------------
+ba mẹ:
+
+UI:---------------------------->tuấn, bảo
+
+-- xử lý xung đột:
+
+
+ --- xem lịch sử:
+
+	B1: xem trang thai file status là 0 hay 1
+	
+	B2: nếu ko đc
+			
+	B3: ....
+		.....
+
+--- sửa: bảo
+
+
+---cloud: bảo, đông
+
+
+
