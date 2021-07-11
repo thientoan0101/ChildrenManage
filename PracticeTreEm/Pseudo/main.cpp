@@ -6,8 +6,9 @@
 #include <sstream>
 #include <vector>
 #include <algorithm>
-
-#include<windows.h>
+#include <conio.h>
+#include <windows.h>
+#include <ctime>
 
 
 
@@ -150,7 +151,22 @@ int inputPassword()
 	
 
 	cout << "pass: ";
-	getline(cin, pass);
+
+	while(true)
+	{
+		if(pass.length() == 17){
+			system("cls");
+			cout << "\nPassword too long. Please try again!\n";
+			break;
+		}
+		char x = _getch();
+		if(x == 13) break;
+		cout << "*";
+		pass.push_back(x);
+	}
+	cout << endl;
+
+	//getline(cin, pass);
 	int count = 1;
 	if (pass == BAME) {
 		return 1;
@@ -176,9 +192,24 @@ int inputPassword()
 	while (count < 3) {
 		if (pass == TREEM) break;
 		else {
+			
+			pass.clear();
 			count++;
 			cout << "pass: ";
-			getline(cin, pass);
+			while(true)
+			{
+				if(pass.length() == 17){
+					system("cls");
+					cout << "\nPassword too long. Please try again!" << endl;
+					break;
+				}
+			char x = _getch();
+			if(x == 13) break;
+			cout << "*";
+			pass.push_back(x);
+			}
+			cout << endl;
+			//getline(cin, pass);
 		}
 	}
 
@@ -187,12 +218,22 @@ int inputPassword()
 
 }
 
+Time getTime(){
+	Time t;
+	time_t now = time(0);
+	tm *ltm = localtime(&now);
+	t.hour = 1 + ltm->tm_hour;
+	t.minute = 1 + ltm->tm_min;
+	return t;
+}
+
 
 
 
 
 int main()
 {
+	
 	int status;
 	int lastCheck = 0;
 	do {
@@ -243,6 +284,9 @@ int main()
 		Sleep(1000);
 		lastCheck++;
 	} while (status == 1);
+
+	//==========================================Dong==========================================
+
 
 	return 0;
 }
