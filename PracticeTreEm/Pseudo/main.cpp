@@ -227,9 +227,34 @@ Time getTime(){
 	return t;
 }
 
+//===============================================Code chua upadte================================
+/*Lấy dir để lưu, hàm trả về string bao gồm thư mục ( ngày tháng ) + tên file(giờ:phút).png*/
+string getDirCapture(){
+    string s;
+	time_t now = time(0);
+	tm *ltm = localtime(&now);
 
+    string dir = to_string(ltm->tm_year + 1900) + "_" + to_string( ltm->tm_mon + 1) + "_" + to_string( ltm->tm_mday);
+    string filename = to_string(ltm->tm_hour) + "_" + to_string(ltm->tm_min) + ".png";
+    
+    string mkdir = "mkdir "+ dir;
+    system(mkdir.c_str());
 
+    s = "\".\\" + dir + "\\" + filename + "\"";
 
+    //cout << s;
+    return s;
+}
+
+/*Truyền vào dir, sau đó chụp màn hình*/
+void captureScreen(string dir){
+    string s = "nircmd.exe savescreenshot " + dir;
+	system(s.c_str());
+}
+
+void nofitication(const string &title, const string &message){
+	MessageBox(NULL, message.c_str(), title.c_str(), MB_OK | MB_ICONQUESTION | MB_SYSTEMMODAL);
+}
 
 int main()
 {
@@ -286,7 +311,9 @@ int main()
 	} while (status == 1);
 
 	//==========================================Dong==========================================
-
+	//string s = getDirCapture();
+    //captureScreen(s);
+	//nofitication("Day la title", "Day la message");
 
 	return 0;
 }
