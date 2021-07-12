@@ -1,3 +1,4 @@
+#pragma warning(disable : 4996)
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -9,6 +10,7 @@
 #include <conio.h>
 #include <windows.h>
 #include <ctime>
+
 
 
 
@@ -255,6 +257,8 @@ void captureScreen(string dir){
 void nofitication(const string &title, const string &message){
 	MessageBox(NULL, message.c_str(), title.c_str(), MB_OK | MB_ICONQUESTION | MB_SYSTEMMODAL);
 }
+
+
 
 int main()
 {
