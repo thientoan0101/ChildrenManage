@@ -10,6 +10,8 @@
 #include <conio.h>
 #include <windows.h>
 #include <ctime>
+#include <chrono>
+#include <thread>
 
 
 
@@ -143,7 +145,29 @@ Time currentTime;
 
 RegulationTime reguTime;
 
+bool isLogin = false;
 
+void countDown(int& time){
+    while(time >= 0){
+        this_thread::sleep_for(chrono::seconds(1));
+        time -= 1;
+    }
+    if(!isLogin)
+        exit(0);
+}
+
+void inputThread(string Tpass){
+    string pass;
+    while(pass != Tpass){
+        cout << "Enter pass: ";
+        getline(cin,pass);
+        if(pass != Tpass)
+            cout << "Wrong pass. Try again\n";
+        else{
+            isLogin = true;
+        }
+    }
+}
 
 
 int inputPassword()
@@ -254,15 +278,15 @@ void captureScreen(string dir){
 	system(s.c_str());
 }
 
-void nofitication(const string &title, const string &message){
+/* void nofitication(const string &title, const string &message){
 	MessageBox(NULL, message.c_str(), title.c_str(), MB_OK | MB_ICONQUESTION | MB_SYSTEMMODAL);
 }
-
+ */
 
 
 int main()
 {
-	
+	int countDownTime = 15;
 	int status;
 	int lastCheck = 0;
 	do {
@@ -306,6 +330,15 @@ int main()
 				}
 			}
 			break;
+			case -2:
+			{
+				thread t1(inputThread,BAME);
+    			thread t2(countDown, ref(countDownTime));
+    			t1.join();
+				cout << "parent" << endl;
+				lastCheck++;
+				break;
+			}
 			default:
 				break;
 			}
