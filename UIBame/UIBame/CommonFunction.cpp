@@ -3,9 +3,9 @@
 string image_background = "./background/background2.jpg";
 string image_history = "./background/history_background2.jpg";
 string history_path = "filepath.txt";
-string editing_path = "example_Editting.txt";
+string editing_path = ".\\..\\..\\Manage_treem\\Children\\data.txt";
 
-
+// NHOM HAM CHUC NANG
 void SDLCommonFunction::menuInit() {
     g_bkground = NULL;
     menu_b = NULL;
@@ -25,7 +25,6 @@ SDL_Surface* SDLCommonFunction::LoadImg(std::string file_path)
 
         if (optimize_image != NULL)
         {
-            //UINT32 color_key = SDL_MapRGB(optimize_image->format, 0, 0xFF, 0xFF);	// ma mau xanh lam: 0,255,255
             UINT32 color_key = SDL_MapRGB(optimize_image->format, 0, 0x00, 0x00);	// ma mau xanh lam: 0,255,255
             SDL_SetColorKey(optimize_image, SDL_SRCCOLORKEY, color_key);
         }
@@ -52,8 +51,15 @@ void SDLCommonFunction::CleanUp()
     SDL_FreeSurface(menu_b);
 }
 
+bool SDLCommonFunction::checkfocuswithRect(const int& x, const int& y, const SDL_Rect& _rect) {
+    if ((x >= _rect.x) && (x <= _rect.x + _rect.w) && (y >= _rect.y) && (y <= _rect.y + _rect.h))
+        return true;
+    return false;
+}
+// THAO TAC VOI FILE
 void SDLCommonFunction::getFilePath() {
-    std::string path = "./history";
+    //std::string path = "./history";
+    std::string path = ".\\..\\..\\data\\history";
     DIR* directory = opendir(path.c_str());
     struct dirent* direntStruct;
     std::ofstream f;
@@ -82,7 +88,9 @@ vector<string> SDLCommonFunction::getFile(string filename) {
 
     while (!f.eof()) {
         getline(f, s);
-        temp.push_back(s);
+        if (s[s.size() - 3] == 'j') {
+            temp.push_back(s);
+        }
     }
 
     f.close();
@@ -116,16 +124,11 @@ void SDLCommonFunction::updateEditFile(string filename, vector<string> data) {
     f.close();
 }
 
-bool SDLCommonFunction::checkfocuswithRect(const int& x, const int& y, const SDL_Rect& _rect) {
-    if ((x >= _rect.x) && (x <= _rect.x + _rect.w) && (y >= _rect.y) && (y <= _rect.y + _rect.h))
-        return true;
-    return false;
-}
 
-
+// HAM KIEM TRA DUNG DO
 void SDLCommonFunction::checkFlag(int& flag) {
     fstream flag_file;
-    flag_file.open("flag.txt", ios::in);
+    flag_file.open(".\\..\\..\\data\\flag.txt", ios::in);
     if (flag_file.is_open()) {
         string temp;
         getline(flag_file, temp);
@@ -136,12 +139,73 @@ void SDLCommonFunction::checkFlag(int& flag) {
 
 void SDLCommonFunction::setFlag(int value) {
     fstream flag_file;
-    flag_file.open("flag.txt", ios::out | ios::trunc);
+    flag_file.open(".\\..\\..\\data\\flag.txt", ios::out | ios::trunc);
     flag_file << value;
     flag_file.close();
 }
 
+// HAM THAO TAC VOI PHIM
+void SDLCommonFunction::PrintModifiers(SDLMod mod) {
+    printf("Modifers: ");
 
+    /* If there are none then say so and return */
+    if (mod == KMOD_NONE) {
+        printf("None\n");
+        return;
+    }
+
+    /* Check for the presence of each SDLMod value */
+    /* This looks messy, but there really isn't    */
+    /* a clearer way.                              */
+    if (mod & KMOD_NUM) printf("NUMLOCK ");
+    if (mod & KMOD_CAPS) printf("CAPSLOCK ");
+    if (mod & KMOD_LCTRL) printf("LCTRL ");
+    if (mod & KMOD_RCTRL) printf("RCTRL ");
+    if (mod & KMOD_RSHIFT) printf("RSHIFT ");
+    if (mod & KMOD_LSHIFT) printf("LSHIFT ");
+    if (mod & KMOD_RALT) printf("RALT ");
+    if (mod & KMOD_LALT) printf("LALT ");
+    if (mod & KMOD_CTRL) printf("CTRL ");
+    if (mod & KMOD_SHIFT) printf("SHIFT ");
+    if (mod & KMOD_ALT) printf("ALT ");
+    printf("\n");
+}
+
+string SDLCommonFunction::PrintKeyInfo(SDL_KeyboardEvent* key) {
+    /* Is it a release or a press? */
+    if (key->type == SDL_KEYUP)
+        printf("Release:- ");
+    else
+        printf("Press:- ");
+
+    /* Print the hardware scancode first */
+    printf("Scancode: 0x%02X", key->keysym.scancode);
+    /* Print the name of the key */
+    string name = SDL_GetKeyName(key->keysym.sym);
+    printf(", Name: %s", SDL_GetKeyName(key->keysym.sym));
+    /* We want to print the unicode info, but we need to make */
+    /* sure its a press event first (remember, release events */
+    /* don't have unicode info                                */
+    if (key->type == SDL_KEYDOWN) {
+        /* If the Unicode value is less than 0x80 then the    */
+        /* unicode value can be used to get a printable       */
+        /* representation of the key, using (char)unicode.    */
+        printf(", Unicode: ");
+        if (key->keysym.unicode < 0x80 && key->keysym.unicode > 0) {
+            printf("%c (0x%04X)", (char)key->keysym.unicode,
+                key->keysym.unicode);
+        }
+        else {
+            printf("? (0x%04X)", key->keysym.unicode);
+        }
+    }
+    printf("\n");
+    /* Print modifier info */
+    PrintModifiers(key->keysym.mod);
+    return name;
+}
+
+// NHOM HAM SHOW MENU
 
 int  SDLCommonFunction::showMenu(SDL_Surface* des) {
     menu_b = SDLCommonFunction::LoadImg(image_background);
@@ -157,7 +221,7 @@ int  SDLCommonFunction::showMenu(SDL_Surface* des) {
 
     g_font_text = TTF_OpenFont(font_local.c_str(), 40);
     if (g_font_text == NULL) {
-        std::cout << "\n=================Loi font Menu======== o day=========\n";
+        std::cout << "\n=================Loi font Menu=================\n";
         printf("TTF_OpenFont: %s\n", TTF_GetError());
         return 0;
     }
@@ -392,7 +456,7 @@ int SDLCommonFunction::showImage(SDL_Surface* des, int i) {
     }
 
     SDL_Surface* image;
-    string path = "./history/" + file[i - 1];
+    string path = ".\\..\\..\\data\\history\\" + file[i - 1];
     image = SDLCommonFunction::LoadImg(path);
 
 
@@ -472,7 +536,6 @@ int SDLCommonFunction::showImage(SDL_Surface* des, int i) {
 
     }
 }
-
 
 int SDLCommonFunction::showEdit(SDL_Surface* des) {
     if (TTF_Init() == -1) {
@@ -603,92 +666,6 @@ int SDLCommonFunction::showEdit(SDL_Surface* des) {
 
 }
 
-string SDLCommonFunction::handleInput(SDL_Surface* des) {
-    SDL_Event event;
-    string s = "";
-    while (SDL_PollEvent(&event)) {
-        switch (event.type) {
-            /* Keyboard event */
-            /* Pass the event data onto PrintKeyInfo() */
-        case SDL_KEYDOWN:
-        case SDL_KEYUP:
-            cout << &event.key;
-            break;
-
-            /* SDL_QUIT event (window close) */
-        case SDL_QUIT:
-            return s;
-            break;
-
-        default:
-            break;
-
-        }
-    }
-}
-
-void SDLCommonFunction::PrintModifiers(SDLMod mod) {
-    printf("Modifers: ");
-
-    /* If there are none then say so and return */
-    if (mod == KMOD_NONE) {
-        printf("None\n");
-        return;
-    }
-
-    /* Check for the presence of each SDLMod value */
-    /* This looks messy, but there really isn't    */
-    /* a clearer way.                              */
-    if (mod & KMOD_NUM) printf("NUMLOCK ");
-    if (mod & KMOD_CAPS) printf("CAPSLOCK ");
-    if (mod & KMOD_LCTRL) printf("LCTRL ");
-    if (mod & KMOD_RCTRL) printf("RCTRL ");
-    if (mod & KMOD_RSHIFT) printf("RSHIFT ");
-    if (mod & KMOD_LSHIFT) printf("LSHIFT ");
-    if (mod & KMOD_RALT) printf("RALT ");
-    if (mod & KMOD_LALT) printf("LALT ");
-    if (mod & KMOD_CTRL) printf("CTRL ");
-    if (mod & KMOD_SHIFT) printf("SHIFT ");
-    if (mod & KMOD_ALT) printf("ALT ");
-    printf("\n");
-}
-
-string SDLCommonFunction::PrintKeyInfo(SDL_KeyboardEvent* key) {
-    /* Is it a release or a press? */
-    if (key->type == SDL_KEYUP)
-        printf("Release:- ");
-    else
-        printf("Press:- ");
-
-    /* Print the hardware scancode first */
-    printf("Scancode: 0x%02X", key->keysym.scancode);
-    /* Print the name of the key */
-    string name = SDL_GetKeyName(key->keysym.sym);
-    printf(", Name: %s", SDL_GetKeyName(key->keysym.sym));
-    /* We want to print the unicode info, but we need to make */
-    /* sure its a press event first (remember, release events */
-    /* don't have unicode info                                */
-    if (key->type == SDL_KEYDOWN) {
-        /* If the Unicode value is less than 0x80 then the    */
-        /* unicode value can be used to get a printable       */
-        /* representation of the key, using (char)unicode.    */
-        printf(", Unicode: ");
-        if (key->keysym.unicode < 0x80 && key->keysym.unicode > 0) {
-            printf("%c (0x%04X)", (char)key->keysym.unicode,
-                key->keysym.unicode);
-        }
-        else {
-            printf("? (0x%04X)", key->keysym.unicode);
-        }
-    }
-    printf("\n");
-    /* Print modifier info */
-    PrintModifiers(key->keysym.mod);
-    return name;
-}
-
-
-
 int SDLCommonFunction::Edit(SDL_Surface* des, int i) {
     if (TTF_Init() == -1) {
         cout << "\n=================Khong the Init Font=================\n";
@@ -791,7 +768,7 @@ int SDLCommonFunction::Edit(SDL_Surface* des, int i) {
                     SDLCommonFunction::updateEditFile(editing_path, file);
                     return 0;
                 }
-                else if (temp == "semicolon") {
+                else if (temp == ";") {
                     s += ':';
                 }
                 else s += toupper(temp[0]);
@@ -912,18 +889,20 @@ int SDLCommonFunction::update(SDL_Surface* des) {
                     if (s.size() != 0)
                         s.pop_back();
                 }
-                else if (temp == "space") {
-                    s += " ";
+                else if (temp == "space") {                    
+                    s += " ";                    
                 }
                 else if (temp == "return") {
                     file.push_back(s);
                     SDLCommonFunction::updateEditFile(editing_path, file);
                     return 0;
                 }
-                else if (temp == "semicolon") {
-                    s += ':';
+                else if (temp == ";") {
+                    s +=":";                    
                 }
                 else s += toupper(temp[0]);
+                
+                cout << "\n" << s << endl;
                 SDLCommonFunction::ApplySurface(g_image_history, des, 0, 0);
                 back.createText(g_font_text, des);
                 text.createText(g_font_text, des);
@@ -934,6 +913,7 @@ int SDLCommonFunction::update(SDL_Surface* des) {
             case SDL_KEYDOWN:
             {
                 if (m_event.key.keysym.sym == SDLK_ESCAPE) return size - 1;
+                
                 break;
             }
             default:

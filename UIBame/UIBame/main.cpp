@@ -39,6 +39,7 @@ Menu:
 	}
 	else if (choice == 0) {
 		// Xem lich su
+		SDLCommonFunction::getFilePath();
 		goto History;
 	}
 	else if (choice == 1) {
